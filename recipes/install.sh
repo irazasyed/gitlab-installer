@@ -68,6 +68,7 @@ echo ""
 msg-primary "Installing Auto Gitlab Backup Tool (Backblaze B2 Supported)"
 git clone https://github.com/sund/auto-gitlab-backup.git /root/auto-gitlab-backup
 cp /root/auto-gitlab-backup/auto-gitlab-backup.conf.sample /root/auto-gitlab-backup/auto-gitlab-backup.conf
+chmod +x /root/auto-gitlab-backup/auto-gitlab-backup.sh
 msg-success "Auto Gitlab backup tool installed: ~/auto-gitlab-backup"
 msg-info "Please make sure to update config: ~/auto-gitlab-backup/auto-gitlab-backup.conf"
 echo ""
