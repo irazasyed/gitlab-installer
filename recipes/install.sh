@@ -7,8 +7,7 @@ SERVER_NAME=$HOSTNAME
 # ------------------------------------------
 # Helper functions to output text in colors.
 # ------------------------------------------
-
-msg() { echo $(tput bold)$(tput setaf $1)"$2" $(tput sgr0); }
+msg() { echo "$(tput bold)$(tput setaf "$1")$2 $(tput sgr0)"; }
 msg-dark() { msg 0 "$1"; }
 msg-error() { msg 1 "$1"; }
 msg-success() { msg 2 "$1"; }
@@ -17,6 +16,13 @@ msg-primary() { msg 4 "$1"; }
 msg-info() { msg 6 "$1"; }
 msg-light() { msg 7 "$1"; }
 msg-default() { msg 9 "$1"; }
+
+date
+
+if [ "$(id -u)" != "0" ]; then
+  msg-error "Must be run as root, directly or with sudo"
+  exit 1
+fi
 
 msg-primary "Installing dependencies"
 apt update --fix-missing && \
@@ -41,16 +47,14 @@ then
     touch /root/.ssh/authorized_keys
     touch /root/.ssh/known_hosts
 fi
-ssh-keyscan -H github.com >> /root/.ssh/known_hosts
-ssh-keyscan -H gitlab.com >> /root/.ssh/known_hosts
-ssh-keyscan -H bitbucket.org >> /root/.ssh/known_hosts
+ssh-keyscan -H github.com gitlab.com bitbucket.org >> /root/.ssh/known_hosts
 msg-success "Known hosts added"
 echo ""
 
 # Configure Git Settings
 msg-primary "Setting git global user name and email"
-git config --global user.name $NAME
-git config --global user.email $EMAIL
+git config --global user.name "$NAME"
+git config --global user.email "$EMAIL"
 msg-success "Git global config set"
 echo ""
 
@@ -75,7 +79,7 @@ echo ""
 
 # Setup Mail Server
 msg-primary "Setting up mail server for Gitlab"
-echo $SERVER_NAME > "/etc/mailname"
+echo "$SERVER_NAME" > "/etc/mailname"
 debconf-set-selections <<< "postfix postfix/mailname string $SERVER_NAME"
 debconf-set-selections <<< "postfix postfix/main_mailer_type string 'Internet Site'"
 apt install -y postfix mailutils
@@ -112,7 +116,7 @@ sed -i \
 
 CHECKAUTHMETHOD=$(grep 'AuthenticationMethods' /etc/ssh/sshd_config)
 
-if [[ ! -z "$CHECKAUTHMETHOD" ]]; then
+if [[ -n "$CHECKAUTHMETHOD" ]]; then
     echo "AuthenticationMethods publickey" >> /etc/ssh/sshd_config
 fi
 
@@ -120,13 +124,13 @@ msg-success "Recommended config has been applied"
 
 # Change SSH Port
 msg-primary "Change SSH Port"
-CURRENTSSHDPORT=$(echo ${SSH_CLIENT##* })
+CURRENTSSHDPORT=${SSH_CLIENT##* }
 
 msg-info "Your current default SSH port is: $CURRENTSSHDPORT"
 echo ""
 
-read -ep "Enter the SSH port number you want to change to: " PORTNUM
-sed -i 's/.*Port.*[0-9]$/Port '$PORTNUM'/gI' /etc/ssh/sshd_config
+read -epr "Enter the SSH port number you want to change to: " PORTNUM
+sed -i "s/.*Port.*[0-9]$/Port $PORTNUM/gI" /etc/ssh/sshd_config
 
 echo ""
 msg-success "Post $PORTNUM configured in /etc/ssh/sshd_config"
