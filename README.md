@@ -16,7 +16,7 @@ curl https://raw.githubusercontent.com/irazasyed/gitlab-installer/master/recipes
 
 > You might have to add a swapfile to your instance. You can use this bash file to add.
 >
-> By default, it's set to 2GB, you can download and make changes to fit your requirements.
+> By default, it's set to **1GB**, you can download and make changes to fit your requirements.
 
 ```bash
 curl https://raw.githubusercontent.com/irazasyed/gitlab-installer/master/recipes/add-swapfile.sh | sudo bash
