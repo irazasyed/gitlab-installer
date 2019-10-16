@@ -9,7 +9,7 @@
 ### Installer
 
 ```bash
-curl https://raw.githubusercontent.com/irazasyed/gitlab-installer/master/recipes/install.sh | sudo bash
+curl https://git.io/gitlab-installer | sudo bash
 ```
 
 ### Add Swapfile
@@ -19,7 +19,7 @@ curl https://raw.githubusercontent.com/irazasyed/gitlab-installer/master/recipes
 > By default, it's set to **1GB**, you can download and make changes to fit your requirements.
 
 ```bash
-curl https://raw.githubusercontent.com/irazasyed/gitlab-installer/master/recipes/add-swapfile.sh | sudo bash
+curl https://git.io/add-swapfile | sudo bash
 ```
 
 ### Restore Backup
@@ -29,7 +29,7 @@ curl https://raw.githubusercontent.com/irazasyed/gitlab-installer/master/recipes
 > Please download and update vars with appropriate values.
 
 ```bash
-curl https://raw.githubusercontent.com/irazasyed/gitlab-installer/master/recipes/restore-backup.sh
+curl https://git.io/restore-backup
 
 # After updating values
 ./restore-backup.sh
